@@ -1,0 +1,27 @@
+{
+  "name": "pe-fp",
+  "version": "1.0.0",
+  "description": "Functional programming in plain english",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apokralipsa/pe-fp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apokralipsa/pe-fp/issues"
+  },
+  "homepage": "https://github.com/apokralipsa/pe-fp#readme",
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "jest": "^27.4.7",
+    "prettier": "^2.5.1",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.5.5"
+  }
+}

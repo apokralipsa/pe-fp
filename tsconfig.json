@@ -1,0 +1,25 @@
+
+{
+  "compilerOptions": {
+    "lib": [
+      "ESNext",
+      "dom"
+    ],
+    "outDir": "lib",
+    "removeComments": true,
+    "target": "ES6",
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "paths": {},
+    "sourceMap": true,
+    "sourceRoot": "/",
+    "strict": true,
+    "alwaysStrict": true
+  },
+  "include": ["./**/*.ts"],
+  "exclude": [
+    "node_modules/**/*",
+    "**/*.spec.ts"
+  ]
+}
