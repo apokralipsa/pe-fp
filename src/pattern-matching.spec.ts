@@ -15,4 +15,13 @@ describe("pattern matching", () => {
 
     expect(result).toBe("was a number: 42");
   });
+
+  it("should allow to return different types based on input value", () => {
+    const [result] = match(mystery())
+      .ifIt(isAString, (value) => `foobar ${value}`)
+      .ifIt(isABoolean, (value) => !value)
+      .ifIt(isANumber, (value) => value / 2);
+
+    expect(result).toBe(21);
+  });
 });
