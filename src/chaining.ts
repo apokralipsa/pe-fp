@@ -1,43 +1,49 @@
-interface Function<IN, OUT> {
+interface SingleArgumentFunction<IN, OUT> {
   (input: IN): OUT;
 }
 
-interface Chain<IN, OUT> {
-  (input: IN): OUT | Error;
-  andThen<NEW_OUT>(nextFunction: Function<OUT, NEW_OUT>): Chain<IN, NEW_OUT>;
+interface Chain<IN extends Array<any>, OUT> {
+  (...input: IN): OUT | Error;
+  andThen<NEW_OUT>(
+    nextFunction: SingleArgumentFunction<OUT, NEW_OUT>
+  ): Chain<IN, NEW_OUT>;
 }
 
-export function startsWith<IN, OUT>(
-  initialFunction: Function<IN, OUT>
-): Chain<IN, OUT> {
-  const chainedFunctions = [initialFunction];
+export function first<F extends (...args: any) => any>(
+  initialFunction: F
+): Chain<Parameters<F>, ReturnType<F>> {
+  const chainedFunctions: Function[] = [initialFunction];
 
-  const apply = (input: IN) =>
+  const apply = (...input: Parameters<F>) =>
     chainedFunctions.reduce((previousOutput, currentFunction) => {
-      if (previousOutput instanceof Error) {
+      if (previousOutput[0] instanceof Error) {
         return previousOutput;
       }
 
       try {
-        return currentFunction(previousOutput);
+        return [currentFunction.apply(undefined, previousOutput)];
       } catch (error) {
-        return wrappedIfNeeded(error);
+        return [correctlyTyped(error)];
       }
-    }, input as any);
+    }, input as Array<any>)[0];
 
-  const andThen = (nextFunction: Function<any, any>) => {
+  const andThen = <NEW_OUT>(
+    nextFunction: SingleArgumentFunction<ReturnType<F>, NEW_OUT>
+  ) => {
     chainedFunctions.push(nextFunction);
-    return Object.assign(apply, { andThen }) as Chain<IN, OUT>;
+    return Object.assign(apply, { andThen });
   };
 
-  return Object.assign(apply, { andThen }) as Chain<IN, OUT>;
+  return Object.assign(apply, { andThen });
 }
 
-export const startWith = startsWith;
-export const is = <IN, OUT>(aFunction: Function<IN, OUT>) => aFunction;
+export const startWith = first;
+export const startsWith = first;
+export const is = <IN, OUT>(aFunction: SingleArgumentFunction<IN, OUT>) =>
+  aFunction;
 export const are = is;
 
-const wrappedIfNeeded = (maybeError: any) =>
+const correctlyTyped = (maybeError: any) =>
   maybeError instanceof Error
     ? maybeError
     : typeof maybeError === "object"

@@ -1,4 +1,4 @@
-import { is, startsWith } from "./chaining";
+import { first, is, startsWith } from "./chaining";
 
 const mixedIngredients = (ingredients: string[]) => {
   if (!ingredients.includes("sugar")) {
@@ -43,21 +43,27 @@ describe("chaining", () => {
   });
 
   it("should return errors instead of throwing them", () => {
-    const coldBatter = startsWith(mixedIngredients)
+    const makeColdBatter = startsWith(mixedIngredients)
       .andThen(is(bakedIn("cold oven")))
       .andThen(is(cooledOnDampTeaTowel));
 
-    const result = coldBatter(["flour", "eggs", "sugar", "chocolate"]);
-
-    if (result instanceof Error) {
-      expect(result.message).toBe("Cannot bake in a cold oven");
-    } else {
-      fail("An expected error was not returned");
-    }
+    expect(makeColdBatter(["flour", "eggs", "sugar", "chocolate"])).toEqual(
+      new Error("Cannot bake in a cold oven")
+    );
   });
 
   it("should wrap incorrectly thrown values in errors", () => {
     const saltyCake = preparedCake(["flour", "eggs", "SALT", "chocolate"]);
-    expect(saltyCake instanceof Error).toBe(true);
+    expect(saltyCake).toBeInstanceOf(Error);
+  });
+
+  it("should allow to start with multiple arguments", () => {
+    const add = (a: number, other: number) => a + other;
+    const multiplyBy = (multiplier: number) => (multiplicand: number) =>
+      multiplier * multiplicand;
+
+    const operate = first(add).andThen(multiplyBy(2));
+
+    expect(operate(1, 2)).toEqual(6);
   });
 });
