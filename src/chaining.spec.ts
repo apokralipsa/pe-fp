@@ -12,15 +12,15 @@ const listed = (ingredients: string[]) => {
   return `${rest.reverse().join(", ")} and ${last}`;
 };
 
-const bakedIn = (oven: string) => (batter: string) => {
-  if (oven.includes("preheated")) {
-    return `cake made from ${batter} baked in ${oven}`;
+const bakedIn = (appliance: string) => (batter: string) => {
+  if (appliance.includes("preheated")) {
+    return `cake made from ${batter} baked in ${appliance}`;
   } else {
-    throw new Error("Cannot bake in a cold oven"); // NOTE: throwing errors instead of returning may make your code harder to follow
+    throw new Error(`Cannot bake because ${appliance} is not preheated`); // NOTE: throwing errors instead of returning may make your code harder to follow
   }
 };
 
-const preheated = (oven: string) => `preheated ${oven}`;
+const preheated = (appliance: string) => `preheated ${appliance}`;
 
 const cooledOnDampTeaTowel = (hotThing: string) =>
   `room temperature ${hotThing}`;
@@ -48,7 +48,7 @@ describe("chaining", () => {
       .andThen(is(cooledOnDampTeaTowel));
 
     expect(makeColdBatter(["flour", "eggs", "sugar", "chocolate"])).toEqual(
-      new Error("Cannot bake in a cold oven")
+      new Error("Cannot bake because cold oven is not preheated")
     );
   });
 
