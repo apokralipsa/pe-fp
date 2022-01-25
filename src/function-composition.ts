@@ -2,20 +2,25 @@ interface SingleArgumentFunction<IN, OUT> {
   (input: IN): OUT;
 }
 
-interface Chain<IN extends Array<any>, OUT> {
+interface ComposedFunction<IN extends Array<any>, OUT> {
   (...input: IN): OUT | Error;
   andThen<NEW_OUT>(
     nextFunction: SingleArgumentFunction<OUT, NEW_OUT>
-  ): Chain<IN, NEW_OUT>;
+  ): ComposedFunction<IN, NEW_OUT>;
 }
 
-export function first<F extends (...args: any) => any>(
-  initialFunction: F
-): Chain<Parameters<F>, ReturnType<F>> {
-  const chainedFunctions: Function[] = [initialFunction];
+export function compose<F extends (...args: any) => any>(
+  firstFunction: F,
+  argumentsDescription?: string
+): ComposedFunction<Parameters<F>, ReturnType<F>> {
+  const label = argumentsDescription
+    ? `a composed function operating on ${argumentsDescription}`
+    : undefined;
+
+  const functions: Function[] = [firstFunction];
 
   const apply = (...input: Parameters<F>) =>
-    chainedFunctions.reduce((previousOutput, currentFunction) => {
+    functions.reduce((previousOutput, currentFunction) => {
       if (previousOutput[0] instanceof Error) {
         return previousOutput;
       }
@@ -30,15 +35,16 @@ export function first<F extends (...args: any) => any>(
   const andThen = <NEW_OUT>(
     nextFunction: SingleArgumentFunction<ReturnType<F>, NEW_OUT>
   ) => {
-    chainedFunctions.push(nextFunction);
-    return Object.assign(apply, { andThen });
+    functions.push(nextFunction);
+    return Object.assign(apply, { andThen, label });
   };
 
-  return Object.assign(apply, { andThen });
+  return Object.assign(apply, { andThen, label });
 }
 
-export const startWith = first;
-export const startsWith = first;
+export const first = compose;
+export const startWith = compose;
+export const startsWith = compose;
 export const is = <IN, OUT>(aFunction: SingleArgumentFunction<IN, OUT>) =>
   aFunction;
 export const are = is;
