@@ -16,15 +16,14 @@ export const whiskedUntilSmooth = (batter: string) => `whisked ${batter}`;
 
 export const bakedIn = (appliance: string) => (batter: string) => {
   if (appliance.includes("preheated")) {
-    return `cake made from ${batter} baked in ${appliance}`;
+    return `cake made from ${batter} baked in a ${appliance}`;
   } else {
     throw new Error(`Cannot bake because ${appliance} is not preheated`); // NOTE: throwing errors instead of returning may make your code harder to follow
   }
 };
 export const preheated = (appliance: string) => `preheated ${appliance}`;
 
-export const cooledOnDampTeaTowel = (hotThing: string) =>
-  `room temperature ${hotThing}`;
+export const cooledOnDampTeaTowel = (hotThing: string) => `room temperature ${hotThing}`;
 
 export const preparedCake = startsWith(mixed, "ingredients")
   .andThen(is(whiskedUntilSmooth))
