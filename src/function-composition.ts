@@ -3,23 +3,23 @@ interface Function<PARAMETERS extends Array<unknown>, OUTPUT> {
 }
 
 interface ComposedFunction<PARAMETERS extends Array<unknown>, OUTPUT>
-  extends Function<PARAMETERS, OUTPUT> {
+  extends Function<PARAMETERS, OUTPUT | Error> {
   andThen<NEW_OUTPUT>(
     nextFunction: Function<[OUTPUT], NEW_OUTPUT>
   ): ComposedFunction<PARAMETERS, NEW_OUTPUT>;
 }
 
-export function compose<F extends Function<any, any>>(
-  aFunction: F,
+export function compose<FUNCTION extends Function<any, any>>(
+  aFunction: FUNCTION,
   argumentsDescription?: string
-): ComposedFunction<Parameters<F>, ReturnType<F>> {
+): ComposedFunction<Parameters<FUNCTION>, ReturnType<FUNCTION>> {
   const label = argumentsDescription
     ? `a composed function operating on ${argumentsDescription}`
     : undefined;
 
   const functions: Function<any, any>[] = [aFunction];
 
-  const apply = (...input: Parameters<F>) =>
+  const apply = (...input: Parameters<FUNCTION>) =>
     functions.reduce((previousOutput, currentFunction) => {
       if (previousOutput[0] instanceof Error) {
         return previousOutput;
@@ -32,7 +32,7 @@ export function compose<F extends Function<any, any>>(
       }
     }, input as Array<any>)[0];
 
-  const andThen = <NEW_OUT>(nextFunction: Function<[ReturnType<F>], NEW_OUT>) => {
+  const andThen = <NEW_OUT>(nextFunction: Function<[ReturnType<FUNCTION>], NEW_OUT>) => {
     functions.push(nextFunction);
     return Object.assign(apply, { andThen, label });
   };
