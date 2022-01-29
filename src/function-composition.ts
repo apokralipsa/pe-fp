@@ -2,19 +2,19 @@ interface Function<PARAMETERS extends Array<unknown>, OUTPUT> {
   (...parameters: PARAMETERS): OUTPUT;
 }
 
-interface ComposedFunction<PARAMETERS extends Array<unknown>, OUTPUT>
+interface CompositeFunction<PARAMETERS extends Array<unknown>, OUTPUT>
   extends Function<PARAMETERS, OUTPUT | Error> {
   andThen<NEW_OUTPUT>(
     nextFunction: Function<[OUTPUT], NEW_OUTPUT>
-  ): ComposedFunction<PARAMETERS, NEW_OUTPUT>;
+  ): CompositeFunction<PARAMETERS, NEW_OUTPUT>;
 }
 
 export function compose<FUNCTION extends Function<any, any>>(
   aFunction: FUNCTION,
   argumentsDescription?: string
-): ComposedFunction<Parameters<FUNCTION>, ReturnType<FUNCTION>> {
+): CompositeFunction<Parameters<FUNCTION>, ReturnType<FUNCTION>> {
   const label = argumentsDescription
-    ? `a composed function operating on ${argumentsDescription}`
+    ? `a composite function operating on ${argumentsDescription}`
     : undefined;
 
   const functions: Function<any, any>[] = [aFunction];
