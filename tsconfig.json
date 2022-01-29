@@ -5,6 +5,7 @@
       "ESNext",
       "dom"
     ],
+    "declaration": true,
     "outDir": "lib",
     "removeComments": true,
     "target": "ES6",
