@@ -1,6 +1,6 @@
 {
   "name": "pe-fp",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Functional programming in plain english",
   "scripts": {
     "test": "jest",
@@ -10,13 +10,17 @@
     "type": "git",
     "url": "git+https://github.com/apokralipsa/pe-fp.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "Functional programming",
+    "Function composition"
+  ],
+  "author": "stawiarskijakub@gmail.com",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/apokralipsa/pe-fp/issues"
   },
   "homepage": "https://github.com/apokralipsa/pe-fp#readme",
+  "main": "lib/index.js",
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "jest": "^27.4.7",
